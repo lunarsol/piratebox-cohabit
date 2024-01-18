@@ -1,0 +1,125 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+}
+.container {
+    text-align: center;
+    max-width: 800px;
+    margin: auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+th {
+    background-color: #3498db;
+    color: #fff;
+}
+tbody tr:hover {
+    background-color: #f5f5f5;
+}
+.download-link {
+    text-decoration: none;
+    color: #27ae60;
+    font-weight: bold;
+}
+.download-link:hover {
+    text-decoration: underline;
+}
+/* Style pour le bouton Aperçu */
+.preview-button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.preview-button:hover {
+    background-color: #2980b9;
+}
+
+/* Styles pour la fenêtre modale de l'aperçu */
+#preview-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    max-width: 160%; /* Deux fois plus grande */
+    max-height: 160vh; /* Deux fois plus grande */
+    overflow: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #333;
+}
+
+/* Styles pour l'aperçu du fichier */
+#preview-iframe {
+    width: 50em;
+    height: 50em;
+    border: none;
+    resize: both; /* Allow manual resizing */
+}
+
+
+
+/* Style pour le bouton Retour */
+.back-button {
+    margin-top: 20px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+.back-button:hover {
+    background-color: #2980b9;
+}
+.search-bar {
+    margin-bottom: 20px;
+}
