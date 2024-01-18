@@ -14,13 +14,13 @@ sudo apt install apache2
 # config apache
 sudo nano /etc/apache2/sites-available/piratebox.conf
 ```
- <VirtualHost *:80>
+ VirtualHost *:80
     ServerAdmin lunarsol@duck.com
     ServerName piratebox.com
     DocumentRoot /var/www/piratebox.com
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>   
+/VirtualHost
 ```
 
 
