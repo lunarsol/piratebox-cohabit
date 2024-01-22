@@ -185,8 +185,11 @@ foreach ($fileByExtension as $extension => $files) {
         if ($isDirectory) {
             echo '<a href="' . $_SERVER['PHP_SELF'] . '?folder=' . urlencode($file) . '">' . $file . '</a>';
         } else {
-            // Sinon, afficher un lien vers le fichier
-            echo '<a href="' . $_SERVER['PHP_SELF'] . '?folder=' . urlencode($_GET['folder'] ?? '') . '&file=' . urlencode($filePath) . '">' . $file . '</a>';
+            // Sinon, afficher un lien vers le fichier avec un bouton de téléchargement
+            echo '<div>';
+            echo '<a href="' . $_SERVER['PHP_SELF'] . '?folder=' . urlencode($_GET['folder'] ?? '') . '&file=' . urlencode($file) . '">' . $file . '</a>';
+            echo ' <a href="download.php?file=' . urlencode($filePath) . '" download><button>Télécharger</button></a>';
+            echo '</div>';
         }
 
         echo '</li>';
@@ -197,25 +200,24 @@ foreach ($fileByExtension as $extension => $files) {
 
 echo '</ul>';
 echo '</div>';
-?>
 
-<?php
 // Afficher le contenu du fichier si un fichier est sélectionné
 if (isset($_GET['file'])) {
-    $selectedFile = urldecode($_GET['file']);
+    $file = urldecode($_GET['file']);
 
-    if (is_file($selectedFile)) {
-        echo '<div>';
-        echo '<p>Contenu du fichier sélectionné :</p>';
-        echo '<pre>';
-        readfile($selectedFile);
-        echo '</pre>';
-        echo '</div>';
+    if (is_file($file)) {
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+        readfile($file);
+        exit();
     } else {
-        echo '<p>Le lien sélectionné ne pointe pas vers un fichier valide.</p>';
+        echo 'Le fichier spécifié n\'existe pas.';
     }
+} else {
+    echo 'Le fichier n\'a pas été spécifié.';
 }
 ?>
+
 
 
 
