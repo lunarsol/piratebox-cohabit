@@ -1,57 +1,68 @@
 <?php
-$uploadDir = '/var/www/piratebox.com/files/'; // Le répertoire où les fichiers seront enregistrés
+if (isset($_POST['envoyer'])) {
+    // Vérifie que le formulaire est bien à l'origine
+    if (!empty($_POST['nom']) && !empty($_FILES['fichier'])) {
+        // Contrôle de la présence du fichier et du nom de fichier
+        if ($_FILES['fichier']['error'] === 0) {
+            // Contrôle de l'absence d'erreur du chargement du fichier depuis le formulaire
 
-if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
-}
+            $uploadDirectory = __DIR__ . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR; // Dossier d'upload
+            $fileInfo = new SplFileInfo($_FILES['fichier']['name']); // Préparation du fichier pour upload
+            $extension = $fileInfo->getExtension();
 
-if(isset($_FILES['file'])) {
-    $errors = [];
-    $success = [];
+            // Récupérer la catégorie sélectionnée
+            $categorie = $_POST['categorie'];
 
-    foreach($_FILES['file']['tmp_name'] as $key => $tmp_name) {
-        $file_name = $_FILES['file']['name'][$key];
-        $file_size = $_FILES['file']['size'][$key];
-        $file_tmp = $_FILES['file']['tmp_name'][$key];
-        $file_type = $_FILES['file']['type'][$key];
-
-        // Vérifiez si le fichier existe déjà
-        $baseFileName = pathinfo($file_name, PATHINFO_FILENAME);
-        $fileExtension = pathinfo($file_name, PATHINFO_EXTENSION);
-
-        $counter = 1;
-        while (file_exists($uploadDir . $file_name)) {
-            $file_name = $baseFileName . '_' . $counter . '.' . $fileExtension;
-            $counter++;
-        }
-
-        $file_path = $uploadDir . $file_name;
-
-        // Vérifiez si le fichier est un fichier audio
-        $allowedAudioTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp3']; // Ajoutez d'autres types si nécessaire
-
-        if (in_array($file_type, $allowedAudioTypes)) {
-            if (move_uploaded_file($file_tmp, $file_path)) {
-                $success[] = $file_name;
-            } else {
-                $errors[] = $file_name;
+            // Déterminer le dossier en fonction de la catégorie sélectionnée
+            $dossierCategorie = '';
+            switch ($categorie) {
+                case 'elec':
+                    $dossierCategorie = 'electronique';
+                    break;
+                case 'hack':
+                    $dossierCategorie = 'hacking';
+                    break;
+                case 'prog':
+                    $dossierCategorie = 'programmation';
+                    break;
+                case 'impr':
+                    $dossierCategorie = 'impression3D';
+                    break;
+                // Ajoutez d'autres cas selon vos catégories
+                default:
+                    $dossierCategorie = 'autre';
+                    break;
             }
+
+// Construire le chemin complet du nouveau fichier avec le dossier de catégorie
+            $nouveauFichier = $dossierCategorie . DIRECTORY_SEPARATOR . $_POST['nom'] . '.' . $extension;
+
+// Créer le dossier de catégorie s'il n'existe pas
+            if (!is_dir($uploadDirectory . $dossierCategorie)) {
+                mkdir($uploadDirectory . $dossierCategorie);
+            }
+
+// Déplacement du fichier vers le dossier d'upload
+            if (move_uploaded_file($_FILES['fichier']['tmp_name'], $uploadDirectory . $nouveauFichier)) {
+                echo 'Le fichier a été correctement déplacé.<br>';
+            } else {
+                echo 'Erreur lors du déplacement du fichier.<br>';
+            }
+
+            header('location: index.php?type=success');
         } else {
-            $errors[] = $file_name . ' n\'est pas un fichier audio valide.';
+            header('location: index.php?type=error&code=3');
         }
-    }
-
-    if (!empty($success)) {
-        echo 'Fichiers téléchargés avec succès : ' . implode(', ', $success);
-    }
-
-    if (!empty($errors)) {
-        echo 'Erreur lors du téléchargement des fichiers : ' . implode(', ', $errors);
+    } elseif (!empty($_FILES['fichier'])) {
+        // Si le nom n'est pas renseigné, utilise le nom d'origine du fichier
+        $uploadDirectory = __DIR__ . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR; // Dossier d'upload
+        $fileInfo = new SplFileInfo($_FILES['fichier']['name']); // Préparation du fichier pour upload
+        $extension = $fileInfo->getExtension();
+        $nouveauFichier = pathinfo($_FILES['fichier']['name'], PATHINFO_FILENAME) . '.' . $extension;
+    } else {
+        header('location: index.php?type=error&code=2');
     }
 } else {
-    echo 'Aucun fichier reçu.';
+    header('location: index.php?type=error&code=1');
 }
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 ?>
