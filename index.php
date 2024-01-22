@@ -26,7 +26,6 @@ if (!empty($_GET['type'])) {
     <meta name="author" content="LunarSol | Raphael VERDOIT">
     <meta name="description" content="Système de stockage de fichiers pour égaler la piratebox pour Fablab Coh@bit Gradignant">
     <meta name="keywords" content="piratebox, ftp, scp, partage, hacking, pirate, opensource">
-    <link rel="stylesheet" href="style.css">
     <title>PirateBox</title>
 </head>
 <style>
