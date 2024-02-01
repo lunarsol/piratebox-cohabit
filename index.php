@@ -24,7 +24,8 @@ if (!empty($_GET['type'])) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="LunarSol | Raphael VERDOIT">
-    <meta name="description" content="Système de stockage de fichiers pour égaler la piratebox pour Fablab Coh@bit Gradignant">
+    <meta name="description"
+          content="Système de stockage de fichiers pour égaler la piratebox pour Fablab Coh@bit Gradignant">
     <meta name="keywords" content="piratebox, ftp, scp, partage, hacking, pirate, opensource">
     <title>PirateBox</title>
 </head>
@@ -123,12 +124,18 @@ if (!empty($_GET['type'])) {
 <h6>Les hackers de qualité t'a vue</h6>
 
 <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Rechercher par nom de fichier">
+    <label for="searchInput">Rechercher par nom de fichier:</label>
+    <input type="text" id="searchInput">
 </div>
 
 <form action="upload.php" method="POST" enctype="multipart/form-data">
-    <input required type="text" name="nom" id="id" placeholder="Nom du fichier">
-    <input type="file" name="fichier" placeholder="Fichier">
+    <label for="nom">Nom du fichier:</label>
+    <input required type="text" name="nom" id="nom" placeholder="Nom du fichier">
+
+    <label for="fichier">Fichier:</label>
+    <input type="file" name="fichier" id="fichier" placeholder="Fichier">
+
+    <label for="categorie">Catégorie:</label>
     <select name="categorie" id="categorie">
         <option value="elec">Electronique</option>
         <option value="hack">Hacking</option>
@@ -136,21 +143,26 @@ if (!empty($_GET['type'])) {
         <option value="impr">Impression 3D</option>
         <option value="autre">Autre</option>
     </select>
+
     <input type="submit" name="envoyer" value="Envoyer le fichier">
 </form>
 
+
 <?php
-$baseDirectory = __DIR__ . DIRECTORY_SEPARATOR . 'files/';
+$baseDirectory = '/mnt/stockage/';
+
+$directory = null;
 
 if (isset($_GET['folder'])) {
     // Si le paramètre 'folder' est défini dans l'URL, ouvrir le dossier correspondant
     $currentFolder = $baseDirectory . $_GET['folder'];
-    $directory = opendir($currentFolder);
 } else {
     // Sinon, ouvrir le dossier principal
     $currentFolder = $baseDirectory;
-    $directory = opendir($currentFolder);
 }
+
+// Continue with common parts
+$directory = opendir($currentFolder);
 
 // Tableau pour stocker les fichiers par extension
 $fileByExtension = array();
@@ -183,13 +195,17 @@ foreach ($fileByExtension as $extension => $files) {
 
         // Si le lien pointe vers un dossier, afficher un lien pour explorer le dossier
         if ($isDirectory) {
-            echo '<a href="' . $_SERVER['PHP_SELF'] . '?folder=' . urlencode($file) . '">' . $file . '</a>';
+            $newFolderPath = $currentFolder . DIRECTORY_SEPARATOR . $file;
+            $relativePath = ltrim(substr($newFolderPath, strlen($baseDirectory)), DIRECTORY_SEPARATOR);
+            echo '<a href="' . $_SERVER['PHP_SELF'] . '?folder=' . urlencode($relativePath) . '">' . $file . '</a>';
+
         } else {
             // Sinon, afficher un lien vers le fichier avec un bouton de téléchargement
             echo '<div>';
-            echo '<a href="' . $_SERVER['PHP_SELF'] . '?folder=' . urlencode($_GET['folder'] ?? '') . '&file=' . urlencode($file) . '">' . $file . '</a>';
-            echo ' <a href="download.php?file=' . urlencode($filePath) . '" download><button>Télécharger</button></a>';
+            echo '<a href="' . $_SERVER['PHP_SELF'] . '?folder=' . urlencode($currentFolder) . '&file=' . urlencode($file) . '">' . $file . '</a>';
+            echo ' <a href="' . $_SERVER['PHP_SELF'] . '?folder=' . urlencode($currentFolder) . '&file=' . urlencode($file) . '&action=download"><button>Télécharger</button></a>';
             echo '</div>';
+
         }
 
         echo '</li>';
@@ -204,12 +220,22 @@ echo '</div>';
 // Afficher le contenu du fichier si un fichier est sélectionné
 if (isset($_GET['file'])) {
     $file = urldecode($_GET['file']);
+    $folder = $_GET['folder'] ?? '';
 
-    if (is_file($file)) {
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
-        readfile($file);
-        exit();
+    // Construire le chemin complet du fichier en utilisant le dossier et le nom du fichier
+    $filePath = $baseDirectory . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . $file;
+
+    if (is_file($filePath)) {
+        // Vérifier que le fichier est lisible (pour des raisons de sécurité)
+        if (is_readable($filePath)) {
+            // Lire le contenu du fichier
+            $fileContent = file_get_contents($filePath);
+
+            // Afficher le contenu du fichier dans une balise pre (préformaté) pour maintenir le format
+            echo '<pre>' . htmlspecialchars($fileContent) . '</pre>';
+        } else {
+            echo 'Le fichier ne peut pas être lu pour des raisons de sécurité.';
+        }
     } else {
         echo 'Le fichier spécifié n\'existe pas.';
     }
@@ -219,16 +245,14 @@ if (isset($_GET['file'])) {
 ?>
 
 
-
-
 <script>
     document.getElementById('searchInput').addEventListener('input', function () {
-        var searchValue = this.value.toLowerCase();
-        var fileList = document.getElementById('fileList');
-        var files = fileList.getElementsByTagName('li');
+        const searchValue = this.value.toLowerCase();
+        const fileList = document.getElementById('fileList');
+        const files = fileList.getElementsByTagName('li');
 
-        for (var i = 0; i < files.length; i++) {
-            var fileName = files[i].innerText.toLowerCase();
+        for (let i = 0; i < files.length; i++) {
+            const fileName = files[i].innerText.toLowerCase();
             if (fileName.includes(searchValue)) {
                 files[i].style.display = 'block';
             } else {

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig host="fablab@192.168.8.142" id="c47a29d0-3dd6-4288-916f-b783430f2752" keyPath="$USER_HOME$/.ssh/id_rsa" port="22" nameFormat="DESCRIPTIVE" username="fablab" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>

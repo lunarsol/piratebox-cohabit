@@ -6,7 +6,7 @@ if (isset($_POST['envoyer'])) {
         if ($_FILES['fichier']['error'] === 0) {
             // Contrôle de l'absence d'erreur du chargement du fichier depuis le formulaire
 
-            $uploadDirectory = __DIR__ . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR; // Dossier d'upload
+            $uploadDirectory = '/mnt/stockage/'; // Dossier d'upload
             $fileInfo = new SplFileInfo($_FILES['fichier']['name']); // Préparation du fichier pour upload
             $extension = $fileInfo->getExtension();
 
@@ -55,7 +55,7 @@ if (isset($_POST['envoyer'])) {
         }
     } elseif (!empty($_FILES['fichier'])) {
         // Si le nom n'est pas renseigné, utilise le nom d'origine du fichier
-        $uploadDirectory = __DIR__ . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR; // Dossier d'upload
+        $uploadDirectory = '/mnt/stockage/';//__DIR__ . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR; // Dossier d'upload
         $fileInfo = new SplFileInfo($_FILES['fichier']['name']); // Préparation du fichier pour upload
         $extension = $fileInfo->getExtension();
         $nouveauFichier = pathinfo($_FILES['fichier']['name'], PATHINFO_FILENAME) . '.' . $extension;
@@ -65,4 +65,4 @@ if (isset($_POST['envoyer'])) {
 } else {
     header('location: index.php?type=error&code=1');
 }
-?>
+?>;
