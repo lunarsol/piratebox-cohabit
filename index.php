@@ -117,11 +117,18 @@ if (!empty($_GET['type'])) {
         text-decoration: underline;
     }
 
+    .home-redir{
+        text-underline: none;
+        text-decoration: none;
+    }
 </style>
 
 <body>
-<h1>Fablab Coh@bit's PirateBox</h1>
-<h6>Les hackers de qualité t'a vue</h6>
+<a href="./index.php" class="home-redir">
+    <h1>Fablab Coh@bit's PirateBox</h1>
+    <h6>Les hackers de qualité t'a vue</h6>
+</a>
+
 
 <div class="search-bar">
     <label for="searchInput">Rechercher par nom de fichier:</label>
@@ -213,6 +220,7 @@ foreach ($fileByExtension as $extension => $files) {
     echo '</ul>';
     echo '</li>';
 }
+
 
 echo '</ul>';
 echo '</div>';
