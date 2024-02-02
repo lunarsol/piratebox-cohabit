@@ -1,4 +1,5 @@
 <?php
+// Gestion des messages en cas d'opérations réussies ou d'erreurs
 if (!empty($_GET['type'])) {
     if ($_GET['type'] === 'success') {
         $message = "Fichier enregistré avec succès";
@@ -129,12 +130,12 @@ if (!empty($_GET['type'])) {
     <h6>Les hackers de qualité t'a vue</h6>
 </a>
 
-
 <div class="search-bar">
     <label for="searchInput">Rechercher par nom de fichier:</label>
     <input type="text" id="searchInput">
 </div>
 
+<!-- Formulaire d'upload -->
 <form action="upload.php" method="POST" enctype="multipart/form-data">
     <label for="nom">Nom du fichier:</label>
     <input required type="text" name="nom" id="nom" placeholder="Nom du fichier">
@@ -154,8 +155,8 @@ if (!empty($_GET['type'])) {
     <input type="submit" name="envoyer" value="Envoyer le fichier">
 </form>
 
-
 <?php
+// Chemin de base du répertoire de stockage
 $baseDirectory = '/mnt/stockage/';
 
 $directory = null;
@@ -205,14 +206,12 @@ foreach ($fileByExtension as $extension => $files) {
             $newFolderPath = $currentFolder . DIRECTORY_SEPARATOR . $file;
             $relativePath = ltrim(substr($newFolderPath, strlen($baseDirectory)), DIRECTORY_SEPARATOR);
             echo '<a href="' . $_SERVER['PHP_SELF'] . '?folder=' . urlencode($relativePath) . '">' . $file . '</a>';
-
         } else {
             // Sinon, afficher un lien vers le fichier avec un bouton de téléchargement
             echo '<div>';
             echo '<a href="' . $_SERVER['PHP_SELF'] . '?folder=' . urlencode($currentFolder) . '&file=' . urlencode($file) . '">' . $file . '</a>';
-            echo ' <a href="' . $_SERVER['PHP_SELF'] . '?folder=' . urlencode($currentFolder) . '&file=' . urlencode($file) . '&action=download"><button>Télécharger</button></a>';
+            echo '<a href="' . $_SERVER['PHP_SELF'] . '?folder=' . urlencode($currentFolder) . '&file=' . urlencode($file) . '&action=download"><button>Télécharger</button></a>';
             echo '</div>';
-
         }
 
         echo '</li>';
@@ -220,7 +219,6 @@ foreach ($fileByExtension as $extension => $files) {
     echo '</ul>';
     echo '</li>';
 }
-
 
 echo '</ul>';
 echo '</div>';
@@ -252,7 +250,7 @@ if (isset($_GET['file'])) {
 }
 ?>
 
-
+<!-- Script pour la recherche dynamique -->
 <script>
     document.getElementById('searchInput').addEventListener('input', function () {
         const searchValue = this.value.toLowerCase();
